@@ -60,9 +60,9 @@ Y_scaled = min_max_scaler.fit_transform(np.array(Y))
 def build_model():
     # create model
     model = Sequential()
-    model.add(Dense(8, input_dim=8, kernel_initializer='normal', activation='linear'))
+    model.add(Dense(8, input_dim=8, kernel_initializer='normal', activation='relu'))
     model.add(BatchNormalization())
-    model.add(Dense(6, kernel_initializer='normal', activation='linear'))
+    model.add(Dense(6, kernel_initializer='normal', activation='relu'))
     model.add(Dense(1, kernel_initializer='normal'))
 
     #Compile model
@@ -74,16 +74,18 @@ reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.9, patience=5, min_lr
 model = build_model()
 history = model.fit(X_scaled, Y_scaled,
                     batch_size=128,
-                    epochs=150,
+                    epochs=120,
                     callbacks=[reduce_lr],
                     validation_split=0.1)
 
 predicted = model.predict(np.array(X_scaled))
 original = Y_scaled
 
+print model.summary()
+
 plt.plot(original, color='black', label = 'Original price')
 plt.plot(predicted, color='blue', label = 'Predicted price')
 plt.legend(loc='best')
-plt.title('Actual and predicted')
+plt.title('Actual and predicted price')
 plt.show()
 
