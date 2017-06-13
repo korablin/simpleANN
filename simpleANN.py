@@ -19,13 +19,13 @@ matplotlib.style.use('ggplot')
 
 # Stocks information 176-1
 # date,open,high,low,close,volume
-dataset_st = pd.read_csv('ts1.csv', usecols=[1,2,3,4,5],
+dataset_st = pd.read_csv('data/ts1.csv', usecols=[1,2,3,4,5],
                           engine='python')
 # Stock+tweets
 # date,tweets,pos,neg,neutr,open,high,low,volume,close
-df = pd.read_csv('full_tesla.csv',
-                        usecols=[0,1,2,3,4,5,6,7,8,9],
-                        engine='python')
+df = pd.read_csv('data/full_tesla.csv',
+                 usecols=[0,1,2,3,4,5,6,7,8,9],
+                 engine='python')
 
 # correlation for stocks+tweets
 dfTS = pd.DataFrame(df)
@@ -36,11 +36,9 @@ print corr_tw
 # stocks and tweets visualization
 close_price = df.ix[:, 'close'].tolist()
 tweets = df.ix[:, 'tweets'].tolist()
-close_price = [(np.array(x) - np.mean(x)) / np.std(x) for x in close_price]
-tweets = [(np.array(x) - np.mean(x)) / np.std(x) for x in tweets]
-plt.plot(tweets, color='black', label = 'Amount of tweets')
-plt.plot(close_price, color='green', label = 'Close price')
-plt.show()
+#plt.plot(tweets, color='black', label = 'Amount of tweets')
+#plt.plot(close_price, color='green', label = 'Close price')
+#plt.show()
 
 # LEARNING
 dataset = df.values
