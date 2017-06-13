@@ -9,6 +9,7 @@ from keras.models import Sequential
 
 from keras.layers.recurrent import LSTM
 from keras import  regularizers
+from keras.layers.normalization import BatchNormalization
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.preprocessing import StandardScaler
@@ -19,10 +20,10 @@ from sklearn import preprocessing
 
 matplotlib.style.use('ggplot')
 
-# Stocks information 176-1
-# date,open,high,low,close,volume
-dataset_st = pd.read_csv('data/ts1.csv', usecols=[1,2,3,4,5],
-                          engine='python')
+# Stocks information
+# date,open,high,low,volume,close
+df_st = pd.read_csv('data/ts1.csv', usecols=[1,2,3,4,5],
+                    engine='python')
 # Stock+tweets
 # date,tweets,pos,neg,neutr,open,high,low,volume,close
 df = pd.read_csv('data/full_tesla.csv',
@@ -55,13 +56,12 @@ Y = dataset[:,9]
 min_max_scaler = preprocessing.MinMaxScaler()
 X_scaled = min_max_scaler.fit_transform(np.array(X))
 Y_scaled = min_max_scaler.fit_transform(np.array(Y))
-print X
-print Y
 
 def build_model():
     # create model
     model = Sequential()
     model.add(Dense(8, input_dim=8, kernel_initializer='normal', activation='linear'))
+    model.add(BatchNormalization())
     model.add(Dense(6, kernel_initializer='normal', activation='linear'))
     model.add(Dense(1, kernel_initializer='normal'))
 
@@ -74,9 +74,9 @@ reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.9, patience=5, min_lr
 model = build_model()
 history = model.fit(X_scaled, Y_scaled,
                     batch_size=128,
-                    epochs=200,
+                    epochs=150,
                     callbacks=[reduce_lr],
-                    validation_split=0.15)
+                    validation_split=0.1)
 
 predicted = model.predict(np.array(X_scaled))
 original = Y_scaled
@@ -87,5 +87,3 @@ plt.legend(loc='best')
 plt.title('Actual and predicted')
 plt.show()
 
-
-#print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
